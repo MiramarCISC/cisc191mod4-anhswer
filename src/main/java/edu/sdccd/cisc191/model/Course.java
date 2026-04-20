@@ -1,32 +1,42 @@
 package edu.sdccd.cisc191.model;
 
 public class Course {
-    private int id;
-    private String title;
-    private int studentId;
+
+    private final int id;
+    private final String title;
+    private final int studentId;
 
     public Course(int id, String title, int studentId) {
-        // TODO validate fields and assign them
+        // validation
+        if (id <= 0) {
+            throw new IllegalArgumentException("Course ID must be greater than 0");
+        }
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Course title cannot be blank");
+        }
+        if (studentId <= 0) {
+            throw new IllegalArgumentException("Student ID must be greater than 0");
+        }
+
+        this.id = id;
+        this.title = title;
+        this.studentId = studentId;
     }
 
     public int getId() {
-        // TODO
-        return 0;
+        return id;
     }
 
     public String getTitle() {
-        // TODO
-        return null;
+        return title;
     }
 
     public int getStudentId() {
-        // TODO
-        return 0;
+        return studentId;
     }
 
     @Override
     public String toString() {
-        // TODO
-        return "";
+        return "Course [id=" + id + ", title=" + title + ", studentId=" + studentId + "]";
     }
 }
