@@ -1,0 +1,44 @@
+2026-05-19 20:37:08.746413-07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE IF NOT EXISTS courses (\000a    [*]if INT PRIMARY KEY,\000a    title VARCHAR(100) NOT NULL,\000a    student_id INT,\000a    FOREIGN KEY (student_id) REFERENCES students(id))\000a"; expected "identifier"; SQL statement:
+CREATE TABLE IF NOT EXISTS courses (
+    if INT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    student_id INT,
+    FOREIGN KEY (student_id) REFERENCES students(id))
+ [42001-224]
+2026-05-19 22:23:31.793401-07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE IF NOT EXISTS courses (\000a    [*]if INT PRIMARY KEY,\000a    title VARCHAR(100) NOT NULL,\000a    student_id INT,\000a    FOREIGN KEY (student_id) REFERENCES students(id))\000a"; expected "identifier"; SQL statement:
+CREATE TABLE IF NOT EXISTS courses (
+    if INT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    student_id INT,
+    FOREIGN KEY (student_id) REFERENCES students(id))
+ [42001-224]
+2026-05-19 22:27:26.641751-07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement " [*]please insert the course values from id,title and then student id"; expected "PREPARE"; SQL statement:
+ please insert the course values from id,title and then student id [42001-224]
+2026-05-19 22:32:50.004771-07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Column "id" not found [42122-224]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:514)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.jdbc.JdbcResultSet.getColumnIndex(JdbcResultSet.java:3518)
+	at org.h2.jdbc.JdbcResultSet.getInt(JdbcResultSet.java:337)
+	at edu.sdccd.cisc191.repository.JdbcStudentRepository.findAll(JdbcStudentRepository.java:61)
+	at edu.sdccd.cisc191.service.StudentService.getAllStudents(StudentService.java:26)
+	at edu.sdccd.cisc191.app.Main.main(Main.java:40)
+2026-05-19 22:34:56.291579-07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Invalid value "1" for parameter "parameterIndex" [90008-224]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:658)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.getInvalidValueException(DbException.java:298)
+	at org.h2.jdbc.JdbcPreparedStatement.setParameter(JdbcPreparedStatement.java:1408)
+	at org.h2.jdbc.JdbcPreparedStatement.setInt(JdbcPreparedStatement.java:372)
+	at edu.sdccd.cisc191.repository.JdbcStudentRepository.findById(JdbcStudentRepository.java:35)
+	at edu.sdccd.cisc191.service.StudentService.getStudent(StudentService.java:22)
+	at edu.sdccd.cisc191.app.Main.main(Main.java:43)
+2026-05-19 22:35:55.207800-07:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "UPDATE students SET gpa = ? WHERE [*]= ?"; expected "INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"; SQL statement:
+UPDATE students SET gpa = ? WHERE = ? [42001-224]

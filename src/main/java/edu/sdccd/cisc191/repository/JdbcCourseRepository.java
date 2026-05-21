@@ -1,80 +1,98 @@
 package edu.sdccd.cisc191.repository;
 
 import edu.sdccd.cisc191.model.Course;
+import edu.sdccd.cisc191.util.DatabaseConfig;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JdbcCourseRepository implements CourseRepository {
-    private final Connection conn;
 
-    public JdbcCourseRepository(Connection conn){
-        this.conn = conn;
-    }
     @Override
     public void save(Course course) {
-
         String sql = "INSERT INTO courses (id, title, student_id) VALUES (?, ?, ?)";
 
-        try(PreparedStatement pstate = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            pstate.setInt(1, course.getId());
-            pstate.setString(2, course.getTitle());
-            pstate.setInt(3, course.getStudentId());
+            stmt.setInt(1, course.getId());
+            stmt.setString(2, course.getTitle());
+            stmt.setInt(3, course.getStudentId());
 
-            pstate.executeUpdate();
+            stmt.executeUpdate();
 
-        } catch(Exception e) {
-            throw new RuntimeException("cannot save course", e);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to save course: " + course.getId(), e);
         }
     }
 
     @Override
     public List<Course> findByStudentId(int studentId) {
-        String sql = "SELECT * FROM courses WHERE student_id = ?";
         List<Course> courses = new ArrayList<>();
-        try(PreparedStatement pstate = conn.prepareStatement(sql)) {
-            pstate.setInt(1, studentId);
-            try(ResultSet rset = pstate.executeQuery()) {
-                while(rset.next()) {
+        String sql = "SELECT * FROM courses WHERE student_id = ? ORDER BY id";
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, studentId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
                     courses.add(new Course(
-                            rset.getInt("id"),
-                            rset.getString("title"),
-                            rset.getInt("student_id")
+                            rs.getInt("id"),
+                            rs.getString("title"),
+                            rs.getInt("student_id")
                     ));
                 }
             }
-        } catch(Exception e) {
-            throw new RuntimeException("not able to find" + studentId, e);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to find courses for studentId: " + studentId, e);
         }
-        // TODO query courses by student_id and map to List<Course>
+
         return courses;
     }
 
     @Override
     public List<Course> findAll() {
-        String sql = "SELECT * FROM courses";
         List<Course> courses = new ArrayList<>();
-        try(PreparedStatement pstate = conn.prepareStatement(sql);
-            ResultSet rs = pstate.executeQuery()) {
-            while(rs.next()) {
+        String sql = "SELECT * FROM courses ORDER BY id";
 
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
                 courses.add(new Course(
                         rs.getInt("id"),
                         rs.getString("title"),
                         rs.getInt("student_id")
                 ));
             }
-        } catch(Exception e) {
-            throw new RuntimeException("Cannot find", e);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to retrieve all courses", e);
         }
+
         return courses;
     }
+
+    @Override
+    public void deleteById(int id) {
+        String sql = "DELETE FROM courses WHERE id = ?";
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to delete course with id: " + id, e);
+        }
     }
-
-
-
-
+}
