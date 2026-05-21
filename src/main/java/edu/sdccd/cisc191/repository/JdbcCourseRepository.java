@@ -3,7 +3,10 @@ package edu.sdccd.cisc191.repository;
 import edu.sdccd.cisc191.model.Course;
 import edu.sdccd.cisc191.util.DatabaseConfig;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,10 +22,11 @@ public class JdbcCourseRepository implements CourseRepository {
             stmt.setInt(1, course.getId());
             stmt.setString(2, course.getTitle());
             stmt.setInt(3, course.getStudentId());
+
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to save course: " + course.getId(), e);
         }
     }
 
@@ -35,18 +39,19 @@ public class JdbcCourseRepository implements CourseRepository {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, studentId);
-            ResultSet rs = stmt.executeQuery();
 
-            while (rs.next()) {
-                courses.add(new Course(
-                        rs.getInt("id"),
-                        rs.getString("title"),
-                        rs.getInt("student_id")
-                ));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    courses.add(new Course(
+                            rs.getInt("id"),
+                            rs.getString("title"),
+                            rs.getInt("student_id")
+                    ));
+                }
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to find courses for studentId: " + studentId, e);
         }
 
         return courses;
@@ -70,7 +75,7 @@ public class JdbcCourseRepository implements CourseRepository {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to retrieve all courses", e);
         }
 
         return courses;
@@ -87,7 +92,7 @@ public class JdbcCourseRepository implements CourseRepository {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to delete course with id: " + id, e);
         }
     }
 }
