@@ -30,17 +30,11 @@ public class JdbcStudentRepository implements StudentRepository {
 
     @Override
     public Student findById(int id) {
-
         String sql = "SELECT * FROM students WHERE id = ?";
-
         try(PreparedStatement pstate = conn.prepareStatement(sql)) {
-
             pstate.setInt(1, id);
-
             try(ResultSet rs = pstate.executeQuery()) {
-
                 if(rs.next()) {
-
                     return new Student(
                             rs.getInt("id"),
                             rs.getString("name"),
@@ -48,7 +42,6 @@ public class JdbcStudentRepository implements StudentRepository {
                     );
                 }
             }
-
         } catch(Exception e) {
             throw new RuntimeException("Cant find student " + id, e);
         }
@@ -58,16 +51,11 @@ public class JdbcStudentRepository implements StudentRepository {
 
     @Override
     public List<Student> findAll() {
-
         String sql = "SELECT * FROM students";
-
         List<Student> students = new ArrayList<>();
-
         try(PreparedStatement pstate = conn.prepareStatement(sql);
             ResultSet rs = pstate.executeQuery()) {
-
             while(rs.next()) {
-
                 students.add(new Student(
                         rs.getInt("id"),
                         rs.getString("name"),
@@ -80,28 +68,20 @@ public class JdbcStudentRepository implements StudentRepository {
         }
         // TODO query all rows and map to List<Student>
         return students;
-
     }
 
     @Override
     public void updateGpa(int id, double gpa) {
-
         String sql = "UPDATE students SET gpa = ? WHERE id = ?";
-
         try(PreparedStatement pstate = conn.prepareStatement(sql)) {
-
             pstate.setDouble(1, gpa);
             pstate.setInt(2, id);
-
             pstate.executeUpdate();
-
         } catch(Exception e) {
             throw new RuntimeException("cannot update", e);
         }
-
         // TODO use PreparedStatement UPDATE
     }
-
     @Override
     public void deleteById(int id) {
         String sql = "DELETE FROM students WHERE id = ?";
